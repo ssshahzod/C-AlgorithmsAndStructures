@@ -1,2 +1,0 @@
-tudying programs
-
