@@ -6,16 +6,15 @@
 #define STACK_OVERFLOW  -100
 #define STACK_UNDERFLOW -101
  
-typedef struct ListNode {
-    int value;
-    struct ListNode *next;
-} ListNode;
 
 void main() {
     int i;
+    char j;
     ListNode *head = NULL;
     for (i = 0; i < 10; i++) {
-        push(&head, i);
+    	printf("%s\n", "Input element: ");
+    	scanf("%s", &j);
+        push(&head, j);
     }
     printf("size = %d\n", getSize(head));
     while (head) {
