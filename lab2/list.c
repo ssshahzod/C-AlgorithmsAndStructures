@@ -1,64 +1,125 @@
+//Linked list and functions for it
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "list.h" 
+#include "list.h"
 
-#define STACK_OVERFLOW  -100
-#define STACK_UNDERFLOW -101
- 
+typedef struct ListNode {
+    void* value;
+    struct ListNode *next;
+} ListNode;
 
-void main() {
-    int i;
-    char j;
-    ListNode *head = NULL;
-    for (i = 0; i < 10; i++) {
-    	printf("%s\n", "Input element: ");
-    	scanf("%s", &j);
-        push(&head, j);
-    }
-    printf("size = %d\n", getSize(head));
-    while (head) {
-        printf("%d ", pop(&head));
-    }
+typedef struct List{
+    int size;
+    ListNode *head;
+} List;
+
+
+List* listCreation(){
+    List* newList = (List *) malloc(sizeof(List));
+    newList->size = 0;
+    newList->head = NULL;
+    return newList;
 }
 
-void push(ListNode **head, int value) { //pushing new element into the stack
-    ListNode *tmp = malloc(sizeof(ListNode));
-	if (tmp == NULL) { //stack is full
-        exit(STACK_OVERFLOW);
+
+void listPush(List* inputList, void* data) {
+    ListNode *tmp = (ListNode*) malloc(sizeof(ListNode));//creating new field
+    tmp->value = data;
+    tmp->next = inputList->head; //putting value, linking with last field in list
+
+    inputList->head = tmp;
+    inputList->size++;
+}
+
+void printList(List* inputList) {
+    ListNode* Head = inputList->head;
+    while (Head) { //while pointer isnt NULL its not last listnode
+        printf("%c ", *((int *) Head->value));
+        Head = Head->next;
     }
-    tmp->next = *head;
-    tmp->value = value;
-    *head = tmp;
+    printf("\n");
 }
 
-//test with void* 
-int pop(ListNode **head) {  
-    ListNode *out;
-    int value;
-    if (*head == NULL)  //stack is empty
-        exit(STACK_UNDERFLOW);
-    out = *head;
-    *head = (*head)->next;
-    value = out->value;
-    free(out);
-    return value;
-}
+void* listPop(List *inputList) {
+    void* x = NULL;
+    ListNode *tn = NULL;  //this node
+    ListNode *nn = NULL;  //next node
 
-void printListStack(const ListNode* head) {
-    printf("stack: ");
-    while (head) {
-        printf("%d ", head->value);
-        head = head->next;
+    if (inputList->size == 0) { //list is empty
+        exit(-1);
     }
+
+    nn = inputList->head;
+    tn = nn;
+    nn = nn->next;
+
+    x = tn->value;
+    inputList->head = nn;
+    inputList->size--;
+    free(tn);
+    return x;
 }
 
-int getSize(const ListNode *head) {
-    int size = 0;
-    while (head) {
-        size++;
-        head = head->next;
+void* listPeek(List* inputList){
+    void* x = NULL;
+    ListNode *tn = NULL;  //this node
+    ListNode *nn = NULL;  //next node
+
+    if (inputList->size == 0) { //list is empty
+        exit(-1);
     }
-    return size;
+
+    tn = inputList->head;
+    x = tn->value;
+    return x;
 }
 
+ListNode* listGetNode(List* input, int index){
+    if(index >= input->size)
+        return NULL;
+    ListNode* node = input->head;
+    for(int i = 0; i < index; i++)
+        node = node->next;
+
+    return node;
+}
+
+void* listGet(List* input, int index){
+    return listGetNode(input, index)->value;
+}
+
+void listClearNode(ListNode* node){
+    free(node->value);
+}
+
+void listInsert(List* input, int index, void* data){
+    if(index - 1 == input->size)
+        listPush(input, data);
+
+    if (!index){
+        listPush(input, data);
+    }
+
+    ListNode* new = (ListNode*) malloc(sizeof(ListNode));
+    new->value = data;
+
+    ListNode* prev = listGetNode(input, index - 1);
+    new->next = prev->next;
+    prev->next = new;
+
+    input->size++;
+}
+
+void deleteList(List* inputList) {
+    ListNode* prev = inputList->head; //first node of the list
+    ListNode* this = prev;
+    while (prev->next) {
+        this = prev;
+        prev = prev->next;
+        free(this);
+    }
+    free(prev);
+    free(inputList);
+}

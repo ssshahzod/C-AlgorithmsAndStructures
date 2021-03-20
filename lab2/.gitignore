@@ -2,4 +2,14 @@ lab3.c
 list.exe
 test.c
 test.exe
-
+vector.exe
+labtest
+main
+libvector.a
+libstack.a
+liblist.a
+CMakeLists.txt
+cmake_install.cmake
+Makefile
+CMakeCache.txt
+CMakeFiles
